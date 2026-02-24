@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SentiScope • Compose</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background: #f8fafc;
+      color: #0f172a;
+    }
+
+    nav {
+      background: white;
+      border-bottom: 2px solid #e2e8f0;
+      padding: 0 32px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    }
+
+    .nav-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      height: 70px;
+    }
+
+    .logo {
+      font-size: 1.5rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 32px;
+      align-items: center;
+    }
+
+    .nav-links a {
+      color: #64748b;
+      text-decoration: none;
+      font-weight: 600;
+      padding: 8px 16px;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .nav-links a:hover {
+      color: #667eea;
+      background: #f1f5f9;
+    }
+
+    .nav-links a.active {
+      color: #667eea;
+      background: #ede9fe;
+    }
+
+    .user-menu {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 8px 16px;
+      background: #f8fafc;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .user-menu:hover {
+      background: #f1f5f9;
+    }
+
+    .user-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 700;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 40px 32px;
+    }
+
+    .hero {
+      text-align: center;
+      margin-bottom: 50px;
+    }
+
+    .hero h1 {
+      font-size: 3rem;
+      font-weight: 900;
+      margin-bottom: 16px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero p {
+      font-size: 1.25rem;
+      color: #64748b;
+    }
+
+    .editor-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+      margin-bottom: 40px;
+    }
+
+    @media (max-width: 1024px) {
+      .editor-container {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .card {
+      background: white;
+      border-radius: 20px;
+      padding: 32px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+      border: 2px solid #f1f5f9;
+      transition: all 0.3s ease;
+    }
+
+    .card:hover {
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+      border-color: #e2e8f0;
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .card-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+    }
+
+    .card-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #0f172a;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 280px;
+      padding: 20px;
+      border: 2px solid #e2e8f0;
+      border-radius: 16px;
+      font-size: 1.05rem;
+      line-height: 1.7;
+      resize: vertical;
+      font-family: inherit;
+      transition: all 0.3s ease;
+      background: #f8fafc;
+    }
+
+    textarea:focus {
+      outline: none;
+      border-color: #667eea;
+      background: white;
+      box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+    }
+
+    .char-count {
+      text-align: right;
+      margin-top: 8px;
+      font-size: 0.9rem;
+      color: #94a3b8;
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 12px;
+      margin-top: 24px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 14px 28px;
+      border-radius: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      border: none;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
+    }
+
+    .btn-success {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      color: white;
+      box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
+    }
+
+    .btn-success:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(16, 185, 129, 0.5);
+    }
+
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none !important;
+    }
+
+    .loading {
+      display: none;
+      align-items: center;
+      gap: 12px;
+      padding: 16px 24px;
+      background: #ede9fe;
+      border-radius: 12px;
+      margin-top: 16px;
+      color: #667eea;
+      font-weight: 600;
+    }
+
+    .loading.active {
+      display: flex;
+    }
+
+    .spinner {
+      width: 20px;
+      height: 20px;
+      border: 3px solid #e0d5ff;
+      border-top-color: #667eea;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .tone-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 20px;
+      border-radius: 12px;
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-bottom: 16px;
+    }
+
+    .tone-polite {
+      background: #d1fae5;
+      color: #065f46;
+    }
+
+    .tone-neutral {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .tone-harsh {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    .explanation {
+      padding: 16px 20px;
+      background: #f8fafc;
+      border-radius: 12px;
+      color: #475569;
+      line-height: 1.7;
+      margin-bottom: 24px;
+    }
+
+    .recommended-box {
+      padding: 20px;
+      background: linear-gradient(135deg, #ede9fe 0%, #f3f0ff 100%);
+      border-radius: 12px;
+      border-left: 4px solid #667eea;
+      margin-bottom: 24px;
+    }
+
+    .recommended-box strong {
+      color: #667eea;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .recommended-content {
+      margin-top: 8px;
+      font-size: 1.1rem;
+      color: #334155;
+    }
+
+    .section {
+      margin-top: 32px;
+    }
+
+    .section-title {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #0f172a;
+      margin-bottom: 16px;
+    }
+
+    .clarity-score {
+      font-size: 3.5rem;
+      font-weight: 900;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-align: center;
+      margin: 24px 0;
+    }
+
+    .clarity-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .clarity-list li {
+      padding: 16px 20px;
+      background: #fef3c7;
+      border-left: 4px solid #f59e0b;
+      border-radius: 8px;
+      color: #78350f;
+      font-weight: 600;
+    }
+
+    .clarity-list.clear li {
+      background: #d1fae5;
+      border-left-color: #10b981;
+      color: #065f46;
+    }
+
+    .preview-box {
+      padding: 24px;
+      background: #f8fafc;
+      border-radius: 12px;
+      white-space: pre-wrap;
+      min-height: 150px;
+      line-height: 1.7;
+      color: #334155;
+      border: 2px dashed #e2e8f0;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: #94a3b8;
+    }
+
+    .empty-state-icon {
+      font-size: 4rem;
+      margin-bottom: 16px;
+      opacity: 0.5;
+    }
+
+    @media (max-width: 768px) {
+      .nav-container {
+        flex-wrap: wrap;
+        height: auto;
+        padding: 16px 0;
+      }
+
+      .hero h1 {
+        font-size: 2rem;
+      }
+
+      .hero p {
+        font-size: 1rem;
+      }
+
+      .container {
+        padding: 24px 16px;
+      }
+
+      .card {
+        padding: 24px 20px;
+      }
+
+      .btn-group {
+        flex-direction: column;
+      }
+
+      .btn {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+    .profile-menu {
+        box-shadow: 0 20px 40px rgba(0,0,0,0.12);
+    }
+    .profile-menu:hover {
+        box-shadow:
+          0 10px 30px rgba(255, 255, 255, 1),
+          0 0 0 1px #c7d2fe;
+    }
+    .logout-btn {
+  width: 100%;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+
+  /* ✅ SIZE FIX */
+  padding: 8px 14px;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 0.85rem;
+
+  color: #475569;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.logout-btn svg {
+  width: 16px;
+  height: 16px;
+  stroke: #667eea;
+}
+
+
+
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="nav-container">
+      <div class="logo">SentiScope</div>
+      <div class="nav-links">
+        <a href="/compose-page" class="active">
+          <span>✍️</span> Compose
+        </a>
+        <a href="/history-page">
+          <span>📜</span> History
+        </a>
+        <a href="/dashboard-page">
+          <span>📊</span> Dashboard
+        </a>
+      </div>
+  <div class="user-menu" id="userMenu">
+  <div class="user-avatar">U</div>
+  <span id="userName">User</span>
+
+  <!-- Profile Menu -->
+  <div class="profile-menu" id="profileMenu">
+
+    <button class="logout-btn" id="logoutBtn">
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="18"
+    height="18"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+    <polyline points="16 17 21 12 16 7"/>
+    <line x1="21" y1="12" x2="9" y2="12"/>
+  </svg>
+  Logout
+</button>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="hero">
+      <h1>Compose Better Emails</h1>
+      <p>Get instant AI-powered tone and clarity feedback</p>
+    </div>
+
+    <div class="editor-container">
+      <!-- Editor Card -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-icon">✍️</div>
+          <h2 class="card-title">Your Message</h2>
+        </div>
+
+        <textarea 
+          id="emailText" 
+          placeholder="Start typing your email here...
+
+For example: 'I need the report by tomorrow. Why haven't you sent it yet?'"
+        ></textarea>
+        <div class="char-count">
+          <span id="charCount">0</span> characters
+        </div>
+
+        <div class="btn-group">
+          <button class="btn btn-primary" id="analyzeBtn">
+            <span>🎯</span> Analyze Tone & Clarity
+          </button>
+          <button class="btn btn-success" id="rewriteBtn">
+            <span>✨</span> Rewrite (Polite)
+          </button>
+        </div>
+
+        <div class="loading" id="loading">
+          <div class="spinner"></div>
+          <span>Analyzing your message...</span>
+        </div>
+      </div>
+
+      <!-- Results Card -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-icon">📊</div>
+          <h2 class="card-title">Analysis Results</h2>
+        </div>
+
+        <div id="resultsContainer">
+          <div class="empty-state">
+            <div class="empty-state-icon">🎯</div>
+            <p><strong>No analysis yet</strong></p>
+            <p style="margin-top: 8px;">Write your message and click "Analyze" to get started</p>
+          </div>
+        </div>
+
+        <div id="toneResult" style="display: none;">
+          <div id="toneBadge"></div>
+          <div id="toneExplanation" class="explanation"></div>
+          
+          <div id="recommendedTone" class="recommended-box"></div>
+
+          <div class="section">
+            <div class="section-title">
+              <span>💎</span> Clarity Score
+            </div>
+            <div id="clarityScore" class="clarity-score">—</div>
+            <ul id="clarityList" class="clarity-list"></ul>
+          </div>
+
+          <div class="section">
+            <div class="section-title">
+              <span>✨</span> Polished Version
+            </div>
+            <div id="rewritePreview" class="preview-box">Click "Rewrite (Polite)" to generate a professional version</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let currentTone = "neutral";  
+    const analyzeBtn = document.getElementById("analyzeBtn");
+    const rewriteBtn = document.getElementById("rewriteBtn");
+    const loading = document.getElementById("loading");
+    const textarea = document.getElementById("emailText");
+    const charCount = document.getElementById("charCount");
+    const resultsContainer = document.getElementById("resultsContainer");
+    const toneResult = document.getElementById("toneResult");
+
+    // Update character count
+    textarea.addEventListener('input', function() {
+      charCount.textContent = this.value.length;
+    });
+
+    // Check auth
+    const userId = localStorage.getItem("sentiscope_user_id");
+    const userName = localStorage.getItem("sentiscope_user_name");
+
+    if (!userId) {
+      window.location.href = "/login-page";
+    }
+
+    // Set user name
+  
+    document.getElementById('userName').textContent = userName.split(' ')[0];
+    document.querySelector('.user-avatar').textContent = userName.charAt(0).toUpperCase();
+
+    function setLoading(state) {
+      loading.classList.toggle('active', state);
+      analyzeBtn.disabled = state;
+      rewriteBtn.disabled = state;
+    }
+
+    function analyzeEmail() {
+      analyzeBtn.disabled = true;
+      const text = textarea.value.trim();
+      if (!text) {
+        alert("Please write something first");
+        return;
+      }
+
+      setLoading(true);
+      resultsContainer.style.display = 'none';
+      toneResult.style.display = 'none';
+      document.getElementById("rewritePreview").textContent ='Click "Rewrite (Polite)" to generate a professional version';
+      fetch("/analyze/realtime", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+              text: text,
+              user_id: userId
+            })
+      })
+      .then(res => res.json())
+      .then(data => {
+        const tone = data.tone || { label: "unknown" };
+        currentTone = tone.label || "neutral";
+        const clarity = data.clarity || { issues: [], clarity_score: 0 };
+
+        // Show tone badge
+        const toneBadge = document.getElementById("toneBadge");
+        const emoji = tone.label === 'polite' ? '😊' : tone.label === 'harsh' ? '😠' : '😐';
+        toneBadge.innerHTML = `<div class="tone-badge tone-${tone.label}">${emoji} ${tone.label.toUpperCase()}</div>`;
+
+        // Show explanation
+        document.getElementById("toneExplanation").textContent = tone.explanation || "";
+
+        // Show recommended tone
+        const rec = tone.recommended_tone || {};
+        document.getElementById("recommendedTone").innerHTML = `
+          <strong>Recommended Tone</strong>
+          <div class="recommended-content">
+            ${rec.emoji || ''} <strong>${rec.name || '—'}</strong><br>
+            <small style="color: #64748b;">${rec.note || ''}</small>
+          </div>
+        `;
+
+        // Show clarity score
+        document.getElementById("clarityScore").textContent = clarity.clarity_score + "%";
+
+        // Show clarity issues
+        const list = document.getElementById("clarityList");
+        list.innerHTML = "";
+        if (clarity.issues.length === 0) {
+          list.classList.add('clear');
+          list.innerHTML = "<li>✅ Clear — no issues detected</li>";
+        } else {
+          list.classList.remove('clear');
+          clarity.issues.forEach(issue => {
+            const li = document.createElement("li");
+            li.textContent = "⚠️ " + issue.replace(/_/g, " ");
+            list.appendChild(li);
+          });
+        }
+
+        toneResult.style.display = 'block';
+      })
+      .catch(err => {
+        console.error(err);
+        alert("Error connecting to server. Make sure the Flask backend is running on port 5000.");
+      })
+      .finally(() => setLoading(false));
+    }
+    function rewriteEmail() {
+      const text = textarea.value.trim();
+      if (!text) {
+        alert("Please write something first");
+        return;
+      }
+
+      setLoading(true);
+
+      fetch("/rewrite", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          text: text,
+          user_id: userId,
+          tone: currentTone  // ✅ IMPORTANT
+        })
+      })
+      .then(res => res.json())
+      .then(data => {
+        const preview = document.getElementById("rewritePreview");
+
+        if (!data.success) {
+          preview.textContent = "❌ Rewrite failed. Try again.";
+          return;
+        }
+
+        preview.textContent = data.rewritten_text || "⚠️ No rewritten text returned.";
+      })
+      .catch(err => {
+        console.error(err);
+        alert("Error connecting to server");
+      })
+      .finally(() => setLoading(false));
+    }
+
+    analyzeBtn.onclick = analyzeEmail;
+    rewriteBtn.onclick = rewriteEmail;
+    const userMenu = document.getElementById("userMenu");
+    const profileMenu = document.getElementById("profileMenu");
+    const logoutBtn = document.getElementById("logoutBtn");
+
+    // ✅ Hide initially
+
+logoutBtn.addEventListener("click", () => {
+  localStorage.clear()
+  window.location.href = "/";
+});
+
+
+  </script>
+</body>
+</html>

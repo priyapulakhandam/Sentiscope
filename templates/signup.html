@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SentiScope • Create Account</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: absolute;
+      width: 500px;
+      height: 500px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 50%;
+      top: -250px;
+      right: -250px;
+      animation: float 20s infinite ease-in-out;
+    }
+
+    body::after {
+      content: '';
+      position: absolute;
+      width: 400px;
+      height: 400px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 50%;
+      bottom: -200px;
+      left: -200px;
+      animation: float 15s infinite ease-in-out reverse;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(20px); }
+    }
+
+    .container {
+      display: flex;
+      max-width: 1000px;
+      width: 100%;
+      background: white;
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      position: relative;
+      z-index: 1;
+    }
+
+    .left-panel {
+      flex: 1;
+      padding: 60px 50px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .logo {
+      font-size: 1.8rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      color: #64748b;
+      margin-bottom: 40px;
+      font-size: 1.05rem;
+    }
+
+    .form-group {
+      margin-bottom: 24px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: #334155;
+      font-size: 0.95rem;
+    }
+
+    input {
+      width: 100%;
+      padding: 14px 16px;
+      border: 2px solid #e2e8f0;
+      border-radius: 12px;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+      background: #f8fafc;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: #667eea;
+      background: white;
+      box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+    }
+
+    .password-strength {
+      margin-top: 8px;
+      height: 4px;
+      background: #e2e8f0;
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .password-strength-bar {
+      height: 100%;
+      width: 0;
+      transition: all 0.3s ease;
+      border-radius: 2px;
+    }
+
+    .strength-weak { width: 33%; background: #ef4444; }
+    .strength-medium { width: 66%; background: #f59e0b; }
+    .strength-strong { width: 100%; background: #10b981; }
+
+    .terms {
+      display: flex;
+      align-items: start;
+      gap: 10px;
+      margin-bottom: 24px;
+      font-size: 0.9rem;
+      color: #64748b;
+    }
+
+    .terms input[type="checkbox"] {
+      width: auto;
+      margin-top: 2px;
+    }
+
+    .terms a {
+      color: #667eea;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .btn {
+      width: 100%;
+      padding: 16px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 1.05rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
+    }
+
+    .btn:active {
+      transform: translateY(0);
+    }
+
+    .btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      margin: 30px 0;
+      color: #94a3b8;
+      font-size: 0.9rem;
+    }
+
+    .divider::before,
+    .divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: #e2e8f0;
+    }
+
+    .divider span {
+      padding: 0 15px;
+    }
+
+    .link {
+      text-align: center;
+      color: #64748b;
+      font-size: 0.95rem;
+    }
+
+    .link a {
+      color: #667eea;
+      text-decoration: none;
+      font-weight: 700;
+    }
+
+    .link a:hover {
+      text-decoration: underline;
+    }
+
+    .right-panel {
+      flex: 1;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      padding: 60px 50px;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .right-panel h1 {
+      font-size: 2.5rem;
+      font-weight: 800;
+      margin-bottom: 20px;
+      line-height: 1.2;
+    }
+
+    .right-panel p {
+      font-size: 1.1rem;
+      opacity: 0.95;
+      line-height: 1.6;
+      margin-bottom: 40px;
+    }
+
+    .benefits {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .benefit {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .benefit-icon {
+      width: 48px;
+      height: 48px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      flex-shrink: 0;
+    }
+
+    .benefit-text h3 {
+      font-size: 1rem;
+      margin-bottom: 4px;
+    }
+
+    .benefit-text p {
+      font-size: 0.9rem;
+      opacity: 0.8;
+      margin: 0;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column-reverse;
+      }
+
+      .left-panel, .right-panel {
+        padding: 40px 30px;
+      }
+
+      .right-panel h1 {
+        font-size: 2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <div class="left-panel">
+      <div class="logo">SentiScope</div>
+      <div class="subtitle">Create your account</div>
+
+      <form id="signupForm">
+        <div class="form-group">
+          <label for="name">Full Name</label>
+          <input type="text" id="name" placeholder="name" required>
+        </div>
+
+        <div class="form-group">
+          <label for="email">Work Email</label>
+          <input type="email" id="email" placeholder="name@gmail.com" required>
+        </div>
+
+        <div class="form-group">
+          <label for="password">Create Password</label>
+          <input type="password" id="password" placeholder="Minimum 8 characters" required>
+          <div class="password-strength">
+            <div class="password-strength-bar" id="strengthBar"></div>
+          </div>
+        </div>
+
+        <div class="terms">
+          <input type="checkbox" id="terms" required>
+          <label for="terms" style="margin: 0; font-weight: 400;">
+            I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>
+          </label>
+        </div>
+
+        <button type="submit" class="btn" id="submitBtn">Create Account</button>
+
+        <div class="divider">
+          <span>or</span>
+        </div>
+
+        <div class="link">
+          Already have an account? <a href="/login-page">Sign in</a>
+        </div>
+      </form>
+    </div>
+
+    <div class="right-panel">
+      <h1>Start Writing Better Emails Today</h1>
+      <p>Join thousands of professionals improving their email communication.</p>
+      
+      <div class="benefits">
+        <div class="benefit">
+          <div class="benefit-icon">🚀</div>
+          <div class="benefit-text">
+            <h3>Free to Start</h3>
+            <p>No credit card required, start analyzing immediately</p>
+          </div>
+        </div>
+        
+        <div class="benefit">
+          <div class="benefit-icon">🔒</div>
+          <div class="benefit-text">
+            <h3>Secure & Private</h3>
+            <p>Your emails are never stored or shared</p>
+          </div>
+        </div>
+        
+        <div class="benefit">
+          <div class="benefit-icon">⚡</div>
+          <div class="benefit-text">
+            <h3>Instant Results</h3>
+            <p>Real-time analysis as you type</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  // 1️⃣ Get elements
+  const passwordInput = document.getElementById('password');
+  const strengthBar = document.getElementById('strengthBar');
+  const signupForm = document.getElementById('signupForm');
+
+  // 2️⃣ Password strength logic (RUNS WHILE TYPING)
+  passwordInput.addEventListener('input', function () {
+    const password = this.value;
+    let strength = 0;
+
+    if (password.length >= 8) strength++;
+    if (password.match(/[a-z]/) && password.match(/[A-Z]/)) strength++;
+    if (password.match(/[0-9]/)) strength++;
+
+    strengthBar.className = 'password-strength-bar';
+    if (strength === 1) strengthBar.classList.add('strength-weak');
+    else if (strength === 2) strengthBar.classList.add('strength-medium');
+    else if (strength === 3) strengthBar.classList.add('strength-strong');
+  });
+
+  // 3️⃣ Signup submit handler (RUNS ON SUBMIT)
+  signupForm.addEventListener('submit', async function (e) {
+    e.preventDefault();
+
+    const name = document.getElementById('name').value.trim();
+    const email = document.getElementById('email').value.trim().toLowerCase();
+    const password = passwordInput.value;
+    const terms = document.getElementById('terms').checked;
+
+    if (!name || !email || !password || !terms) {
+      alert("Please fill all fields and accept terms.");
+      return;
+    }
+
+    try {
+      const response = await fetch("/signup", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          name: name,
+          email: email,
+          password: password
+        })
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        alert(data.error || "Signup failed");
+        return;
+      }
+
+      alert("Account created successfully!");
+      window.location.href = "/login-page";
+
+    } catch (error) {
+      alert("Backend not reachable. Please start the server.");
+      console.error(error);
+    }
+  });
+</script>
+
+
+</body>
+</html>
