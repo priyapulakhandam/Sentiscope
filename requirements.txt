@@ -20,7 +20,7 @@ protobuf
 grpcio
 grpcio-status
 gunicorn
+psycopg[binary]
 psycopg2-binary
 requests
 python-dotenv
-
