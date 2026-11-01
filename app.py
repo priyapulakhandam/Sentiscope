@@ -44,6 +44,11 @@ app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("DATABASE_URL")
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 db.init_app(app)
+def get_valid_user_id(value):
+    try:
+        return int(value)
+    except (TypeError, ValueError):
+        return None
 
 with app.app_context():
     db.create_all()
@@ -54,12 +59,13 @@ app.register_blueprint(auth_bp)
 # ---------- ANALYZE ----------
 @app.route("/analyze/realtime", methods=["POST"])
 def realtime_analysis():
-    data = request.json
-    text = data.get("text", "").strip()
-    user_id = data.get("user_id")   # ✅ FIX
+    data = request.get_json(silent=True) or {}
 
-    if not text or not user_id:
-        return jsonify({"error": "Missing text or user"}), 400
+    text = (data.get("text") or "").strip()
+    user_id = get_valid_user_id(data.get("user_id"))
+
+    if not text or user_id is None:
+        return jsonify({"error": "Valid text and user ID required"}), 400
 
     tone_result = analyze_tone(text)
     clarity_result = analyze_clarity(text)
@@ -71,7 +77,7 @@ def realtime_analysis():
         confidence=tone_result["confidence"],
         explanation=tone_result.get("explanation"),
         clarity_score=clarity_result.get("clarity_score"),
-        clarity_issues=json.dumps(clarity_result.get("issues")),
+        clarity_issues=json.dumps(clarity_result.get("issues", [])),
         rewritten_text=None
     )
 
@@ -119,20 +125,24 @@ def rewrite():
 # ---------- HISTORY ----------
 @app.route("/history", methods=["GET"])
 def history():
-    user_id = request.args.get("user_id")
+    user_id = get_valid_user_id(request.args.get("user_id"))
 
-    if not user_id:
-        return jsonify([])
+    if user_id is None:
+        return jsonify({"error": "Valid user ID required"}), 400
 
-    analyses = EmailAnalysis.query.filter_by(user_id=user_id)\
-        .order_by(EmailAnalysis.created_at.desc())\
-        .all()
+    analyses = EmailAnalysis.query.filter_by(
+        user_id=user_id
+    ).order_by(
+        EmailAnalysis.created_at.desc()
+    ).all()
 
     return jsonify([
         {
-            "text": a.email_text[:120] + ("..." if len(a.email_text) > 120 else ""),
+            "text": a.email_text[:120] + (
+                "..." if len(a.email_text) > 120 else ""
+            ),
             "tone": a.tone,
-            "clarityIssues": json.loads(a.clarity_issues),
+            "clarityIssues": json.loads(a.clarity_issues or "[]"),
             "time": a.created_at.strftime("%Y-%m-%d %H:%M")
         }
         for a in analyses
@@ -140,10 +150,10 @@ def history():
 # ---------- CLEAR HISTORY ----------
 @app.route("/history/clear", methods=["DELETE"])
 def clear_history():
-    user_id = request.args.get("user_id")
+    user_id = get_valid_user_id(request.args.get("user_id"))
 
-    if not user_id:
-        return jsonify({"error": "User ID required"}), 400
+    if user_id is None:
+        return jsonify({"error": "Valid user ID required"}), 400
 
     EmailAnalysis.query.filter_by(user_id=user_id).delete()
     db.session.commit()
@@ -154,9 +164,14 @@ def clear_history():
 # ---------- DASHBOARD ----------
 @app.route("/dashboard", methods=["GET"])
 def dashboard():
-    user_id = request.args.get("user_id")
+    user_id = get_valid_user_id(request.args.get("user_id"))
 
-    analyses = EmailAnalysis.query.filter_by(user_id=user_id).all()
+    if user_id is None:
+        return jsonify({"error": "Valid user ID required"}), 400
+
+    analyses = EmailAnalysis.query.filter_by(
+        user_id=user_id
+    ).all()
 
     return jsonify({
         "total": len(analyses),
@@ -164,7 +179,6 @@ def dashboard():
         "neutral": sum(a.tone == "neutral" for a in analyses),
         "harsh": sum(a.tone == "harsh" for a in analyses)
     })
-
 
 if __name__ == "__main__":
     app.run(debug=True)
